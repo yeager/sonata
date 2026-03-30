@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 espeak-phonemizer = { path = "../../../espeak-phonemizer" }
+swedish-phonemizer = { path = "../../../swedish-phonemizer" }
 sonata-core = { path = "../../core" }
 ndarray = "0.15.6"
 serde = { version = "1.0.160", features = ["derive"] }

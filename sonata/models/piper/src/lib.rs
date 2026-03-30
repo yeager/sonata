@@ -1,4 +1,5 @@
 use espeak_phonemizer::text_to_phonemes;
+use swedish_phonemizer::swedish_text_to_phonemes;
 use libtashkeel_base::do_tashkeel;
 use ndarray::Axis;
 use ndarray::{Array, Array1, Array2, ArrayView, Dim, IxDynImpl};
@@ -250,6 +251,19 @@ trait VitsModelCommons {
     }
     fn do_phonemize_text(&self, text: &str, is_ssml: bool) -> SonataResult<Phonemes> {
         let config = self.get_config();
+        // Use rule-based Swedish G2P (no espeak-ng dependency for Swedish)
+        if config.espeak.voice == "sv" {
+            let phonemes = match swedish_text_to_phonemes(&text) {
+                Ok(ph) => ph,
+                Err(e) => {
+                    return Err(SonataError::PhonemizationError(format!(
+                        "Failed to phonemize Swedish text. Error: {}",
+                        e
+                    )))
+                }
+            };
+            return Ok(phonemes.into());
+        }
         let text = if config.espeak.voice == "ar" {
             let diacritized = self.diacritize_text(text)?;
             Cow::from(diacritized)

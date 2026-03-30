@@ -1,0 +1,12 @@
+[package]
+name = "swedish-phonemizer"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Rule-based Swedish grapheme-to-phoneme converter for Piper TTS"
+
+[dependencies]
+regex = "1.10"
+once_cell = "1.19"
+
+[dev-dependencies]

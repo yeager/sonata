@@ -139,7 +139,7 @@ fn lengthen_vowel(vowel: &str) -> Result<String, Box<dyn Error>> {
     Ok(long_vowel.to_string())
 }
 
-/// Make a vowel short and adjust quality if needed  
+/// Make a vowel short and adjust quality if needed
 fn shorten_vowel(vowel: &str) -> Result<String, Box<dyn Error>> {
     let short_vowel = match vowel {
         "a" | "ɑː" => "a",

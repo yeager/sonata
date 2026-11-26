@@ -125,14 +125,7 @@ fn check_multi_char_rules(
     let slice2 = context.slice(2);
     let slice3 = context.slice(3);
     let slice4 = context.slice(4);
-    let slice5 = context.slice(5);
-
     // Check longer patterns first
-
-    // 5-character patterns
-    if slice5 == "skjor" {
-        return Ok(Some(("ɧ uː".to_string(), 2))); // "skj" → /ɧ/
-    }
 
     // 4-character patterns
     if slice4 == "tion" || slice4 == "sion" {
@@ -194,7 +187,7 @@ fn handle_g(_context: &PhonemeContext) -> Result<&'static str, Box<dyn Error>> {
     Ok("g")
 }
 
-/// Handle 'h' phonemization  
+/// Handle 'h' phonemization
 fn handle_h(_context: &PhonemeContext) -> Result<&'static str, Box<dyn Error>> {
     // Check if 'h' is silent in combinations (handled in multi-char rules)
     Ok("h")
@@ -218,7 +211,7 @@ fn handle_n(_context: &PhonemeContext) -> Result<&'static str, Box<dyn Error>> {
     Ok("n")
 }
 
-/// Handle 'r' phonemization  
+/// Handle 'r' phonemization
 fn handle_r(_context: &PhonemeContext) -> Result<&'static str, Box<dyn Error>> {
     // r + consonant → retroflex (handled in multi-char rules)
     Ok("r")

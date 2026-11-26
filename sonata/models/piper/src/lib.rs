@@ -251,8 +251,9 @@ trait VitsModelCommons {
     }
     fn do_phonemize_text(&self, text: &str, is_ssml: bool) -> SonataResult<Phonemes> {
         let config = self.get_config();
-        // Use rule-based Swedish G2P (no espeak-ng dependency for Swedish)
-        if config.espeak.voice == "sv" {
+        // Use rule-based Swedish G2P for plain text; leave SSML to espeak so
+        // its markup is parsed rather than spoken as ordinary text.
+        if config.espeak.voice == "sv" && !is_ssml {
             let phonemes = match swedish_text_to_phonemes(&text) {
                 Ok(ph) => ph,
                 Err(e) => {

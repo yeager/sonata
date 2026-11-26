@@ -105,7 +105,13 @@ pub fn swedish_text_to_phonemes(text: &str) -> Result<String, Box<dyn Error>> {
 fn normalize_text(text: &str) -> String {
     text.to_lowercase()
         .chars()
-        .filter(|c| c.is_alphabetic() || c.is_whitespace())
+        .map(|c| {
+            if c.is_alphabetic() || c.is_whitespace() {
+                c
+            } else {
+                ' '
+            }
+        })
         .collect()
 }
 

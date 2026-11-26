@@ -40,14 +40,14 @@ static EXCEPTION_WORDS: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(||
     map.insert("om", "ɔ m");
     map.insert("så", "s oː");
     map.insert("får", "f oːr");
-    map.insert("går", "j oːr");
+    map.insert("går", "g oːr");
     map.insert("står", "s t oːr");
     map.insert("kan", "k a n");
     map.insert("ska", "s k a");
     map.insert("skulle", "s k ʉ l e");
     map.insert("kommer", "k ɔ m er");
     map.insert("blir", "b l iːr");
-    map.insert("varit", "v ɑː r ɪ");
+    map.insert("varit", "v ɑː r ɪ t");
 
     map
 });

@@ -184,9 +184,13 @@ fn check_multi_char_rules(
 }
 
 /// Handle 'g' phonemization
-fn handle_g(_context: &PhonemeContext) -> Result<&'static str, Box<dyn Error>> {
-    // 'g' before front vowels can be /j/ or /g/ - default to /g/ for simplicity
-    Ok("g")
+fn handle_g(context: &PhonemeContext) -> Result<&'static str, Box<dyn Error>> {
+    // Swedish 'g' is normally soft (/j/) before front vowels.
+    if context.char_at(1).is_some_and(is_front_vowel) {
+        Ok("j")
+    } else {
+        Ok("g")
+    }
 }
 
 /// Handle 'h' phonemization

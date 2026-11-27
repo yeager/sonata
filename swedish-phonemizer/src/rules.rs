@@ -152,7 +152,9 @@ fn check_multi_char_rules(
         // Consonant clusters
         "ng" => return Ok(Some(("ŋ".to_string(), 2))),
         "nk" => return Ok(Some(("ŋ k".to_string(), 2))),
-        "ck" => return Ok(Some(("k".to_string(), 2))),
+        // Swedish "ck" represents a geminated /k/, which keeps the preceding
+        // vowel short (e.g. tack, fick). Preserve that length cue in the output.
+        "ck" => return Ok(Some(("k k".to_string(), 2))),
 
         // Retroflexes (r + consonant)
         "rn" => return Ok(Some(("ɳ".to_string(), 2))),

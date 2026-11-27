@@ -1,5 +1,4 @@
 use espeak_phonemizer::text_to_phonemes;
-use swedish_phonemizer::swedish_text_to_phonemes;
 use libtashkeel_base::do_tashkeel;
 use ndarray::Axis;
 use ndarray::{Array, Array1, Array2, ArrayView, Dim, IxDynImpl};
@@ -15,6 +14,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, RwLock};
+use swedish_phonemizer::swedish_text_to_phonemes;
 
 const MIN_CHUNK_SIZE: isize = 44;
 const MAX_CHUNK_SIZE: usize = 1024;
@@ -254,16 +254,31 @@ trait VitsModelCommons {
         // Use rule-based Swedish G2P for plain text; leave SSML to espeak so
         // its markup is parsed rather than spoken as ordinary text.
         if config.espeak.voice == "sv" && !is_ssml {
-            let phonemes = match swedish_text_to_phonemes(&text) {
-                Ok(ph) => ph,
-                Err(e) => {
-                    return Err(SonataError::PhonemizationError(format!(
-                        "Failed to phonemize Swedish text. Error: {}",
-                        e
-                    )))
-                }
-            };
-            return Ok(phonemes.into());
+            // Keep eSpeak's sentence boundaries and use its output for text
+            // containing punctuation or numbers. The rule-based converter
+            // currently handles alphabetic Swedish words only.
+            let sentences = text_to_phonemes(text, &config.espeak.voice, false, None, true, false)
+                .map_err(|e| SonataError::PhonemizationError(e.to_string()))?;
+            let mut result = Vec::with_capacity(sentences.len());
+            for (start, end, espeak_phonemes) in sentences {
+                let source = text.get(start..end).unwrap_or_default();
+                let phonemes = if !source.trim().is_empty()
+                    && source
+                        .chars()
+                        .all(|ch| ch.is_alphabetic() || ch.is_whitespace())
+                {
+                    swedish_text_to_phonemes(source).map_err(|e| {
+                        SonataError::PhonemizationError(format!(
+                            "Failed to phonemize Swedish text. Error: {}",
+                            e
+                        ))
+                    })?
+                } else {
+                    espeak_phonemes
+                };
+                result.push((start, end, phonemes));
+            }
+            return Ok(result.into());
         }
         let text = if config.espeak.voice == "ar" {
             let diacritized = self.diacritize_text(text)?;
